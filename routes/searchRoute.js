@@ -2,7 +2,7 @@ const router = require("express").Router();
 const jwtParseToken = require("../services/jwtParseToke");
 const db = require("../db/db");
 
-router.get("/user", async (req, res) => {
+router.get("/userfromdb", async (req, res) => {
   let { UsersCollection, client } = await db();
   let username = req.body.username;
 
@@ -22,7 +22,7 @@ router.get("/user", async (req, res) => {
   }
 });
 
-router.get('/tree' , async(req,res) => {
+router.get('/treesfromuser' , async(req,res) => {
   let { UsersCollection, TreesCollection ,client } = await db();
   try {
   let currentUserId = jwtParseToken(req.header("jwt-auth-token")).userId;
@@ -57,5 +57,24 @@ router.get('/tree' , async(req,res) => {
   }
 })
 
+router.get("/treefromdb", async (req, res) => {
+  let { TreesCollection, client } = await db();
+  let treeId = req.body.treeId;
+
+  try {
+    let tree = await TreesCollection.findOne({ "treeId": treeId });
+    if(!tree) res.status(400).send({"error" : `No tree present`});
+
+    res.send({tree});
+  }
+  catch (error) {
+    console.log("try catch , catch an errors", error)
+    res.status(400).send(error);
+  }
+  finally {
+    console.log("db connection closes")
+    client.close()
+  }
+});
 
 module.exports = router;

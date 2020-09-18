@@ -8,9 +8,7 @@ const validator = require("../model/treeSchema");
 router.post("/createtree", async (req, res) => {
   let { UsersCollection, TreesCollection, client } = await db();
 
-
   const treeId = generateId();
-
   let tree = {
     treeId,
     treename: req.body.treename,
@@ -20,9 +18,9 @@ router.post("/createtree", async (req, res) => {
     returnValue: req.body.returnValue,
     days: req.body.days,
     createTime: Date(),
+    netMoney: req.body.investment,
   }
   //@TODO: fixed to 2 digit for unitCollection and unitFine
-
   tree.unitCollection = tree.returnValue / tree.days;
   tree.unitFine = tree.unitCollection * 0.1;
 
@@ -62,7 +60,7 @@ router.post("/createtree", async (req, res) => {
 
 });
 
-router.post("/addmember", async (req, res) => {
+router.patch("/addmember", async (req, res) => {
   const { UsersCollection, TreesCollection, client } = await db();
   const memberId = generateId();
   const treeId = req.body.treeId;
@@ -86,9 +84,11 @@ router.post("/addmember", async (req, res) => {
     let validationError = validator.addMemberValidation(member);
     if (validationError) return res.status(400).send(validationError.details[0].message);
 
+    member.totalDues = {total : 0 , dues : []} 
+
     let treeCollection = await TreesCollection.updateOne({ "treeId": treeId }, { $push: { members: { $each: [member] } } })
 
-    res.send( treeCollection);
+    res.send(treeCollection);
   } catch (error) {
     res.status(400).send({ error })
   } finally {
@@ -97,5 +97,36 @@ router.post("/addmember", async (req, res) => {
 
   }
 })
+
+router.patch("/pay", async (req, res) => {
+  let { TreesCollection, client } = await db();
+
+  let treeId = req.body.treeId;
+  let memberId = req.body.memberId;
+  let payment = req.body.payment;
+  let transactionId = generateId();
+
+
+  let validationError = validator.paymentValidation({treeId , memberId , payment});
+  if (validationError) res.status(400).send(validationError.details[0].message);
+
+  try {
+let fine = 0 ;
+    
+    let transaction = { transactionId , memberId ,"totalPayment": payment , fine, "transactedAt": Date()};
+     await TreesCollection.updateOne({ "treeId": treeId }, { $push: { "transaction": { $each: [{ transaction }] } } })
+     let tree = await TreesCollection.updateOne({ "treeId": treeId, "members.memberId": memberId }, { $push: { "members.$.transactions": { $each: [transactionId] } } })
+    console.log(tree);
+    if (!tree) res.status(400).send({ "error": "tree isn't available " });
+
+    res.send({ tree })
+
+  } catch (error) {
+
+  } finally {
+    client.close();
+  }
+})
+
 
 module.exports = router;
