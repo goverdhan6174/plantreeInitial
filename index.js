@@ -13,6 +13,9 @@ const searchRoute = require('./routes/searchRoute');
 app.use(express.json());
 app.use(cors())
 
+app.get('/' , (req, res) => {res.send("Hello");})
+app.get('/dashboard' , (req, res) => {res.send("dashboard");})
+
 //Route Middlewares
 app.use("/api/user", authRoute);
 app.use(tokenMiddleware);
@@ -20,8 +23,7 @@ app.use(tokenMiddleware);
 app.use('/api/tree', treeRoute);
 app.use('/api/search', searchRoute);
 
-app.get('/' , (req, res) => {res.send("Hello");})
-app.get('/dashboard' , (req, res) => {res.send("dashboard");})
+
 
 
 
