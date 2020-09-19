@@ -22,10 +22,11 @@ async function connectDB() {
         // Call To Users Collection
         let UsersCollection = db.collection("Users");
         let TreesCollection = db.collection("Trees");
+        let AuthCollection = db.collection("Auth");
 
         console.log("connected to database..." + db.databaseName);
 
-        return { UsersCollection, TreesCollection, client };
+        return { AuthCollection, UsersCollection, TreesCollection, client };
 
     } catch (e) {
         console.error("something bad happened" + e);

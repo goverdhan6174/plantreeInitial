@@ -1,0 +1,23 @@
+[{
+    "username" : "goverdhansingh",
+    "password" : "ilovemyself",
+    "repassword" : "ilovemyself",
+    "email" : "love@yourself.com"
+}
+,
+{
+    "treename" : "firstTree",
+    "investment" : 500000,
+    "principal" : 9000,
+    "returnValue" : 10000,
+    "days" : 100,
+    "admins" : [
+        "5f65179d33f6e92a5492f009" , "5f6517aa33f6e92a5492f00d"
+    ]
+},
+{
+    "treeId" : "5f65202afc70c903e0584a0e",
+    "name" : "member04",
+    "noOfPackages" : 8
+}
+]

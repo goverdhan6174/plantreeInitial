@@ -2,17 +2,17 @@ const Joi = require('joi');
 
 let createTreeValidation = (treeInfo) => {
     const createTreeSchema = Joi.object({
-        treeId: Joi.string().required(),
         treename: Joi.string().min(3).max(30).required(),
         investment: Joi.number().min(3).required(),
-        admins: Joi.array().items(Joi.string()).required(),
+        admins: Joi.array().required(),
         principal: Joi.number().required(),
         returnValue: Joi.number().required(),
         unitCollection: Joi.number().required(),
         unitFine: Joi.number().required(),
         days: Joi.number().min(2).required(),
-        createTime: Joi.date().required(),
+        createTime: Joi.date().iso().required(),
         createdBy: Joi.required(),
+        netBalance: Joi.number().required()
     })
 
     const { error } = createTreeSchema.validate(treeInfo);
@@ -23,9 +23,9 @@ let addMemberValidation = (memberInfo) => {
     const addMemberSchema = Joi.object({
         memberId: Joi.string().required(),
         name: Joi.string().min(3).max(30).required(),
-        noOfPackage: Joi.number().required(),
-        joinedAt: Joi.date().required(),
-        lastPaymentwrtJoin: Joi.date().required(),
+        noOfPackages: Joi.number().required(),
+        joinedAt: Joi.date().iso().required(),
+        lastPaymentwrtJoin: Joi.date().iso().required(),
         addBy: Joi.required(),
     })
 
@@ -48,7 +48,6 @@ let MembersssSchema = Joi.object().keys({
 
 let paymentValidation = (payObj) => {
     let paymentSchema = Joi.object({
-        treeId: Joi.string().required(),
         memberId: Joi.string().required(),
         payment: Joi.number().required(),
     })
