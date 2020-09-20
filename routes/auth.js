@@ -31,10 +31,10 @@ router.post("/register", async (req, res) => {
     await AuthCollection.insertOne({ o_id: savedUser.ops[0]._id,  username, email, password: hashedPassword });
 
     const token = jwt.sign({ id: savedUser.ops[0]._id}, process.env.JWT_TOKEN_SECRET);
-    res.header('jwt-auth-token', token).send({ token: token, savedUser: savedUser.ops[0] });
+    res.header('jwt-auth-token', token).status(201).send({ token: token, savedUser: savedUser.ops[0] , error : null });
   }
   catch (error) {
-    res.status(400).send(error);
+    res.status(400).send({error});
   }
   finally {
     console.log("db connection closes")
@@ -58,10 +58,10 @@ router.get("/login", async (req, res) => {
 
     const token = jwt.sign({ id: user.o_id}, process.env.JWT_TOKEN_SECRET);
 
-    res.header('jwt-auth-token', token).send({ "jwt-auth-token": token });
+    res.header('jwt-auth-token', token).send({ "jwt-auth-token": token , error : null});
   }
   catch (error) {
-    res.status(400).send(error);
+    res.status(400).send({error});
   }
   finally {
     console.log("db connection closes")
