@@ -43,17 +43,17 @@ router.post("/register", async (req, res) => {
 });
 
 router.get("/login", async (req, res) => {
-  let { AuthCollection, UsersCollection, client } = await db();
+  let { AuthCollection , client } = await db();
 
   let username = req.body.username;
   let password = req.body.password;
 
   try {
     let user = await AuthCollection.findOne({ username });
-    if (!user) return res.status(400).send(`userName or password is not correct.`);
+    if (!user) return res.status(400).send({error : `userName or password is not correct.`});
 
     let isPasswordMatched = await bcrypt.compare(password, user.password);
-    if (!isPasswordMatched) return res.status(400).send(`userName or password is not correct`);
+    if (!isPasswordMatched) return res.status(400).send({error : `userName or password is not correct`});
 
 
     const token = jwt.sign({ id: user.o_id}, process.env.JWT_TOKEN_SECRET);
