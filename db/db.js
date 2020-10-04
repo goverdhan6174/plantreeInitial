@@ -29,6 +29,10 @@ async function connectDB() {
         return { AuthCollection, UsersCollection, TreesCollection, client };
 
     } catch (e) {
+        if (client !== undefined) {
+            client.close();
+            console.error("closed the db connection")
+        }
         console.error("something bad happened" + e);
     } finally {
         //Its important too close the TCP connection

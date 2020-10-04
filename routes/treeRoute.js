@@ -8,7 +8,7 @@ const db = require("../db/db");
 const validator = require("../model/treeSchema");
 
 router.post("/createtree", async (req, res) => {
- 
+
   let { UsersCollection, TreesCollection, client } = await db();
   let tree = {
     treename: req.body.treename,
@@ -44,7 +44,6 @@ router.post("/createtree", async (req, res) => {
     };
     await run();
 
-
     res.send({ "tree": savedTree });
   }
   catch (error) {
@@ -56,7 +55,6 @@ router.post("/createtree", async (req, res) => {
     client.close()
 
   }
-
 
 });
 
@@ -89,8 +87,8 @@ router.patch("/addmember", async (req, res) => {
     member.totalDues = { total: 0, dues: [] }
 
 
-    let updatedNetBalance = tree.netBalance - (tree.principal * member.noOfPackages) ; 
-    if(updatedNetBalance < 0) return res.status(400).send({"error" : "don't have enough balance"})
+    let updatedNetBalance = tree.netBalance - (tree.principal * member.noOfPackages);
+    if (updatedNetBalance < 0) return res.status(400).send({ "error": "don't have enough balance" })
 
     let treeCollection = await TreesCollection.updateOne(
       { "_id": ObjectId(treeId) },
