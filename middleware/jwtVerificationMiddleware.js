@@ -1,10 +1,12 @@
 const jwtParseToken = require("../services/jwtParseToke");
 
+// parse the token then jump to next router else return Error 
+
 module.exports = function authMiddleware(req, res, next) {
   const token = req.header("jwt-auth-token");
   try {
     if (!token) {
-      console.log("Access Denied : Redirect to Login Page ");
+      console.log("TODO :: " ,"Access Denied : Redirect to Login Page ");
       res.status(401).send("Access Denied ");
     }
     const verified = jwtParseToken(token);

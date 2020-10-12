@@ -24,7 +24,7 @@ async function connectDB() {
         let TreesCollection = db.collection("Trees");
         let AuthCollection = db.collection("Auth");
 
-        console.log("connected to database..." + db.databaseName);
+        console.log("connected to database... " + db.databaseName);
 
         return { AuthCollection, UsersCollection, TreesCollection, client };
 

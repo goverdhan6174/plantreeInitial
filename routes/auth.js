@@ -7,6 +7,13 @@ const validator = require("../model/registerUserSchema");
 
 //@TODO: seperate the auth and user
 
+/* 
+Register Endpoint
+It take Username, Password and Repassword than checkout for unique Username 
+and after match of Password and Repassword, Creates User
+Return Token
+*/
+
 router.post("/register", async (req, res) => {
   let { AuthCollection, UsersCollection, client } = await db();
   const username = req.body.username;
@@ -20,13 +27,12 @@ router.post("/register", async (req, res) => {
   try {
     let user = await AuthCollection.findOne({ username });
     if (user) return res.status(400).send(`username is not available`);
-
     if (password !== rePassword) return res.status(400).send(`Passwords doesnt match`);
 
     const salt = bcrypt.genSaltSync(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    let savedUser = await UsersCollection.insertOne({ username });
+    let savedUser = await UsersCollection.insertOne({username});
     await AuthCollection.insertOne({ o_id: savedUser.ops[0]._id, username, email, password: hashedPassword });
 
     const token = jwt.sign({ id: savedUser.ops[0]._id }, process.env.JWT_TOKEN_SECRET);
@@ -40,6 +46,11 @@ router.post("/register", async (req, res) => {
     client.close()
   }
 });
+
+/* 
+Login Endpoint
+After match of Usernam and Password, Return Token and Array User Trees Objects
+*/
 
 router.get("/login", async (req, res) => {
   let { AuthCollection, UsersCollection, TreesCollection, client } = await db();

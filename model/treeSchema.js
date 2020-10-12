@@ -7,9 +7,9 @@ let createTreeValidation = (treeInfo) => {
         admins: Joi.array().required(),
         principal: Joi.number().required(),
         returnValue: Joi.number().required(),
+        days: Joi.number().min(2).required(),
         unitCollection: Joi.number().required(),
         unitFine: Joi.number().required(),
-        days: Joi.number().min(2).required(),
         createTime: Joi.date().iso().required(),
         createdBy: Joi.required(),
         netBalance: Joi.number().required()
